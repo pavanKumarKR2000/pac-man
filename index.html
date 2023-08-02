@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pacman</title>
+  </head>
+  <body>
+    <div id="gameBoard">
+      <h1 id="title">Pacman</h1>
+      <canvas id="gameCanvas"></canvas>
+    </div>
+  </body>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Contrail+One&display=swap");
+    @import url("https://fonts.googleapis.com/css2?family=Wellfleet&display=swap");
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: "Contrail One", cursive;
+      font-family: "Wellfleet", cursive;
+    }
+
+    #title {
+      text-align: center;
+      font-size: 4rem;
+    }
+
+    #gameBoard {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #gameCanvas {
+      box-shadow: 10px 10px 20px black;
+    }
+  </style>
+  <script src="./src/Game.js" type="module"></script>
+</html>
