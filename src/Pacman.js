@@ -13,8 +13,11 @@ export default class Pacman {
 
     this.pacmanAnimationTimerDefault = 10;
     this.pacmanAnimationTimer = null;
+    this.wakaSound = new Audio("../sounds/waka.wav");
 
     this.pacmanRotation = this.Rotation.right;
+
+    this.madeFirstMove = false;
 
     document.addEventListener("keydown", this.#keydown);
 
@@ -57,24 +60,28 @@ export default class Pacman {
         this.currentMovingDirection = MovingDirection.up;
       }
       this.requestedMovingDirection = MovingDirection.up;
+      this.madeFirstMove = true;
     } else if (e.keyCode === 40) {
       /** down */
       if (this.currentMovingDirection === MovingDirection.up) {
         this.currentMovingDirection = MovingDirection.down;
       }
       this.requestedMovingDirection = MovingDirection.down;
+      this.madeFirstMove = true;
     } else if (e.keyCode === 37) {
       /** left */
       if (this.currentMovingDirection === MovingDirection.right) {
         this.currentMovingDirection = MovingDirection.left;
       }
       this.requestedMovingDirection = MovingDirection.left;
+      this.madeFirstMove = true;
     } else if (e.keyCode === 39) {
       /** right */
       if (this.currentMovingDirection === MovingDirection.left) {
         this.currentMovingDirection = MovingDirection.right;
       }
       this.requestedMovingDirection = MovingDirection.right;
+      this.madeFirstMove = true;
     }
   };
 
@@ -174,6 +181,7 @@ export default class Pacman {
   #eatDot() {
     if (this.tm.eatDot(this.x, this.y)) {
       //play sound
+      this.wakaSound.play();
     }
   }
 }

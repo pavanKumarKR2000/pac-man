@@ -1,4 +1,5 @@
 import Pacman from "./Pacman.js";
+import Enemy from "./Enemy.js";
 import MovingDirection from "./MovingDirection.js";
 
 export default class TileMap {
@@ -17,6 +18,8 @@ export default class TileMap {
    * 1->wall
    * 4->pacman
    * 5->empty space
+   * 6->enemy
+   * 7->powerdot
    */
 
   map = [
@@ -24,10 +27,10 @@ export default class TileMap {
     [1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+    [1, 6, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 0, 0, 6, 1, 0, 0, 0, 1],
     [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 6, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ];
@@ -44,13 +47,6 @@ export default class TileMap {
         } else {
           this.#drawBlank(ctx, column, row, this.tileSize);
         }
-        // ctx.strokeStyle = "yellow";
-        // ctx.strokeRect(
-        //   column * this.tileSize,
-        //   row * this.tileSize,
-        //   this.tileSize,
-        //   this.tileSize
-        // );
       }
     }
   }
@@ -97,6 +93,31 @@ export default class TileMap {
         }
       }
     }
+  }
+
+  getEnemies(velocity) {
+    const enimies = [];
+
+    for (let row = 0; row < this.map.length; row++) {
+      for (let column = 0; column < this.map[0].length; column++) {
+        let tile = this.map[row][column];
+
+        if (tile === 6) {
+          this.map[row][column] = 0;
+          enimies.push(
+            new Enemy(
+              column * this.tileSize,
+              row * this.tileSize,
+              this.tileSize,
+              velocity,
+              this
+            )
+          );
+        }
+      }
+    }
+
+    return enimies;
   }
 
   setCanvaSize(canvas) {
@@ -161,7 +182,10 @@ export default class TileMap {
 
       if (this.map[row][column] === 0) {
         this.map[row][column] = 5;
+        return true;
       }
     }
+
+    return false;
   }
 }
