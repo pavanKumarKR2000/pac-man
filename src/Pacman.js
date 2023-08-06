@@ -14,6 +14,10 @@ export default class Pacman {
     this.pacmanAnimationTimerDefault = 10;
     this.pacmanAnimationTimer = null;
     this.wakaSound = new Audio("../sounds/waka.wav");
+    this.powerDotSound = new Audio("../sounds/power_dot.wav");
+    this.powerDotActive = false;
+    this.powerDotAboutToExpire = false;
+    this.timers = [];
 
     this.pacmanRotation = this.Rotation.right;
 
@@ -35,6 +39,7 @@ export default class Pacman {
     this.#move();
     this.#animate();
     this.#eatDot();
+    this.#eatPowerDot();
 
     const size = this.tileSize / 2;
 
@@ -179,9 +184,34 @@ export default class Pacman {
   }
 
   #eatDot() {
-    if (this.tm.eatDot(this.x, this.y)) {
+    if (this.tm.eatDot(this.x, this.y) && this.madeFirstMove) {
       //play sound
       this.wakaSound.play();
+    }
+  }
+
+  #eatPowerDot() {
+    if (this.tm.eatPowerDot(this.x, this.y)) {
+      //the ghosts will become blue
+      this.powerDotSound.play();
+      this.powerDotActive = true;
+      this.powerDotAboutToExpire = false;
+
+      this.timers.forEach((timer) => clearTimeout(timer));
+      this.timers = [];
+
+      let powerDotTimer = setTimeout(() => {
+        this.powerDotActive = false;
+        this.powerDotAboutToExpire = false;
+      }, 6 * 1000);
+
+      this.timers.push(powerDotTimer);
+
+      let powerAboutToExpireTimer = setTimeout(() => {
+        this.powerDotAboutToExpire = true;
+      }, 3 * 1000);
+
+      this.timers.push(powerAboutToExpireTimer);
     }
   }
 }
