@@ -127,7 +127,7 @@ export default class TileMap {
   }
 
   getEnemies(velocity) {
-    const enimies = [];
+    const enemies = [];
 
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[0].length; column++) {
@@ -135,7 +135,7 @@ export default class TileMap {
 
         if (tile === 6) {
           this.map[row][column] = 0;
-          enimies.push(
+          enemies.push(
             new Enemy(
               column * this.tileSize,
               row * this.tileSize,
@@ -148,7 +148,7 @@ export default class TileMap {
       }
     }
 
-    return enimies;
+    return enemies;
   }
 
   setCanvaSize(canvas) {
@@ -235,5 +235,13 @@ export default class TileMap {
     }
 
     return false;
+  }
+
+  didWin() {
+    return this.#dotsLeft() === 0;
+  }
+
+  #dotsLeft() {
+    return this.map.flat().filter((tile) => tile === 0).length;
   }
 }

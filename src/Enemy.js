@@ -13,6 +13,9 @@ export default class Enemy {
     this.directionTimerDefault = this.#random(1, 5);
     this.directionTimer = this.directionTimerDefault;
 
+    this.scaredAboutToExpireTimerDeafult = 10;
+    this.scaredAboutToExpireTimer = this.scaredAboutToExpireTimerDeafult;
+
     this.#loadEnemyImages();
   }
 
@@ -20,13 +23,54 @@ export default class Enemy {
     return min + Math.floor((max - min + 1) * Math.random());
   }
 
-  draw(ctx, pause) {
+  draw(ctx, pause, pacman) {
     if (!pause) {
       this.#move(ctx);
       this.#changeDirection();
     }
 
+    this.#setImage(ctx, pacman);
+  }
+  collideWith(pacman) {
+    const size = this.tileSize / 2;
+
+    if (
+      this.x < pacman.x + size &&
+      this.x + size > pacman.x &&
+      this.y < pacman.y + size &&
+      this.y + size > pacman.y
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  #setImage(ctx, pacman) {
+    if (pacman.powerDotActive) {
+      this.#setImageWhenPowerDotIsActive(pacman);
+    } else {
+      this.image = this.normalGhost;
+    }
     ctx.drawImage(this.image, this.x, this.y, this.tileSize, this.tileSize);
+  }
+
+  #setImageWhenPowerDotIsActive(pacman) {
+    if (pacman.powerDotAboutToExpire) {
+      this.scaredAboutToExpireTimer--;
+
+      if (this.scaredAboutToExpireTimer === 0) {
+        this.scaredAboutToExpireTimer = this.scaredAboutToExpireTimerDeafult;
+
+        if ((this.image = this.scaredGhost)) {
+          this.image = this.scaredGhost2;
+        } else {
+          this.image = this.scaredGhost;
+        }
+      }
+    } else {
+      this.image = this.scaredGhost;
+    }
   }
 
   #move(ctx) {
